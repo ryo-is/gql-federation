@@ -1,12 +1,8 @@
 type Query {
-  get: Get
+  user(id: Int!): User
 }
 
-type Get {
-  res: Result
-}
-
-type Result {
-  text: String
-  number: Int
+type User @key(fields: "id") {
+  id: Int!
+  name: String!
 }

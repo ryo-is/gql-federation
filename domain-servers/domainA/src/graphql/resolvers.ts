@@ -2,15 +2,18 @@ import { Resolvers } from 'src/graphql/generated/graphql';
 
 export const resolvers: Resolvers = {
   Query: {
-    get: async () => {
-      return {};
+    user: async (_, { id }) => {
+      return {
+        id,
+        name: 'test',
+      };
     },
   },
-  Get: {
-    res: () => {
+  User: {
+    __resolveReference(user) {
       return {
-        text: 'hello GraphGL !!!!',
-        number: 12345,
+        id: user.id,
+        name: 'test',
       };
     },
   },

@@ -4,7 +4,6 @@ export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
-export type RequireFields<T, K extends keyof T> = Omit<T, K> & { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -12,40 +11,28 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  _FieldSet: any;
+};
+
+export type Get = {
+  __typename?: 'Get';
+  res?: Maybe<Result>;
 };
 
 export type Query = {
   __typename?: 'Query';
-  user?: Maybe<User>;
+  get?: Maybe<Get>;
 };
 
-
-export type QueryUserArgs = {
-  id: Scalars['Int'];
-};
-
-export type User = {
-  __typename?: 'User';
-  id: Scalars['Int'];
-  name: Scalars['String'];
+export type Result = {
+  __typename?: 'Result';
+  number?: Maybe<Scalars['Int']>;
+  text?: Maybe<Scalars['String']>;
 };
 
 
 
 export type ResolverTypeWrapper<T> = Promise<T> | T;
 
-export type ReferenceResolver<TResult, TReference, TContext> = (
-      reference: TReference,
-      context: TContext,
-      info: GraphQLResolveInfo
-    ) => Promise<TResult> | TResult;
-
-      type ScalarCheck<T, S> = S extends true ? T : NullableCheck<T, S>;
-      type NullableCheck<T, S> = Maybe<T> extends T ? Maybe<ListCheck<NonNullable<T>, S>> : ListCheck<T, S>;
-      type ListCheck<T, S> = T extends (infer U)[] ? NullableCheck<U, S>[] : GraphQLRecursivePick<T, S>;
-      export type GraphQLRecursivePick<T, S> = { [K in keyof T & keyof S]: ScalarCheck<T[K], S[K]> };
-    
 
 export type ResolverWithResolve<TResult, TParent, TContext, TArgs> = {
   resolve: ResolverFn<TResult, TParent, TContext, TArgs>;
@@ -111,35 +98,42 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
-  Query: ResolverTypeWrapper<{}>;
-  Int: ResolverTypeWrapper<Scalars['Int']>;
-  User: ResolverTypeWrapper<User>;
-  String: ResolverTypeWrapper<Scalars['String']>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
+  Get: ResolverTypeWrapper<Get>;
+  Int: ResolverTypeWrapper<Scalars['Int']>;
+  Query: ResolverTypeWrapper<{}>;
+  Result: ResolverTypeWrapper<Result>;
+  String: ResolverTypeWrapper<Scalars['String']>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
-  Query: {};
-  Int: Scalars['Int'];
-  User: User;
-  String: Scalars['String'];
   Boolean: Scalars['Boolean'];
+  Get: Get;
+  Int: Scalars['Int'];
+  Query: {};
+  Result: Result;
+  String: Scalars['String'];
+};
+
+export type GetResolvers<ContextType = any, ParentType extends ResolversParentTypes['Get'] = ResolversParentTypes['Get']> = {
+  res?: Resolver<Maybe<ResolversTypes['Result']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
-  user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryUserArgs, 'id'>>;
+  get?: Resolver<Maybe<ResolversTypes['Get']>, ParentType, ContextType>;
 };
 
-export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
-  __resolveReference?: ReferenceResolver<Maybe<ResolversTypes['User']>, { __typename: 'User' } & GraphQLRecursivePick<ParentType, {"id":true}>, ContextType>;
-  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+export type ResultResolvers<ContextType = any, ParentType extends ResolversParentTypes['Result'] = ResolversParentTypes['Result']> = {
+  number?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  text?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type Resolvers<ContextType = any> = {
+  Get?: GetResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
-  User?: UserResolvers<ContextType>;
+  Result?: ResultResolvers<ContextType>;
 };
 
