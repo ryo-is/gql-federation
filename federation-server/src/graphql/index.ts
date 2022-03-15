@@ -1,16 +1,13 @@
-import fs from 'fs';
 import { Express } from 'express';
-import { resolvers } from 'src/graphql/resolvers';
-import { ApolloServer, gql } from 'apollo-server-express';
+import { ApolloServer } from 'apollo-server-express';
+import { ApolloGateway } from '@apollo/gateway';
 
 // Apollo
 export const startApolloServer = async (app: Express) => {
-  const typeDefs = gql(
-    fs.readFileSync('src/graphql/schema.graphql', {
-      encoding: 'utf8',
-    })
-  );
-  const gqlSrever = new ApolloServer({ typeDefs, resolvers });
+  const gateway = new ApolloGateway({
+    serviceList: [{ name: 'users', url: 'http://localhost:3001/graphql' }],
+  });
+  const gqlSrever = new ApolloServer({ gateway });
   await gqlSrever.start();
   gqlSrever.applyMiddleware({ app });
 };
